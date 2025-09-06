@@ -33,6 +33,9 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
+    profilePicture:{
+        type: String,
+    },
     about:{
         type: String,
         maxlength: [250,`Too large! length should be under 250`]

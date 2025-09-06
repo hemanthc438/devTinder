@@ -11,4 +11,16 @@ const validationLogIn = (req) =>{
         throw new Error("please enter creddentials!")
     }
 }
-module.exports = { validationSignUp,validationLogIn }
+const validateProfileEdit = (req) =>{
+    const body = req.body
+    const editableFields = ["firstName","lastName","profilePicture","emailId","about","age","gender","skills"]
+    const isEditValid = Object.keys(body).every((item)=>editableFields.includes(item))
+    return isEditValid;
+}
+const validatePasswordReset = (req) =>{
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{6,}$/;
+    const body = req.body;
+    const isNewPasswordValid = strongPasswordRegex.test(body.password)
+    return isNewPasswordValid;
+}
+module.exports = { validationSignUp,validationLogIn,validateProfileEdit,validatePasswordReset}
