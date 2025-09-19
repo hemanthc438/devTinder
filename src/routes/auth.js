@@ -9,16 +9,22 @@ authRouter.post('/signup', async(req,res)=>{
     const data = req.body
     try{
         validationSignUp(req)
-        const {firstName,lastName,emailId,password} = data;
+        const {firstName,lastName,emailId,password,profilePicture,age,gender,about} = data;
         const hashedPassword = await bcrypt.hash(password,10)
         const user = new User({
             firstName,
             lastName,
             emailId,
-            password:hashedPassword
+            password:hashedPassword,
+            profilePicture,
+            age,
+            gender,
+            about
         })
         await user.save()
-        res.send("User added succesfully")
+        const token = await user.getJWT()
+        res.cookie("token",token)   
+        res.status(200).json({message:'User Added Successfully!',user})
     }catch(e){
         res.status(400).send("Something went wrong - "+e.message)
     }
@@ -36,12 +42,12 @@ authRouter.post('/login', async(req,res)=>{
         if(isPasswordValid){
             const token = await user.getJWT()
             res.cookie("token",token)   
-            res.send('Login Successful!')
+            res.status(200).json({message:'Login Successful!',user})
         }else{
             throw new Error("Invalid credentials")
         } 
     }catch(e){
-        res.status(400).send("Something went wrong - "+e.message)
+        res.status(400).send(e.message)
     }
 })
 authRouter.post('/logout', async(req,res)=>{

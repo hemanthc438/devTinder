@@ -41,7 +41,6 @@ connectionRouter.post('/request/review/:status/:requestId',useUserAuth,async(req
     try{
         const loggedInUserId = req.user._id;
         const {status,requestId} = req.params;
-
         const allowedStatuses = ['accepted','rejected']
         if(!allowedStatuses.includes(status)){
             res.status(400).json({message:"Bad connection type!!"})
@@ -56,7 +55,7 @@ connectionRouter.post('/request/review/:status/:requestId',useUserAuth,async(req
         }
         request.connectionStatus=status;
         const data = await request.save();
-        res.status(200).json({message:status},data)
+        res.status(200).json({message:status,data})
     }catch(e){
         res.status(400).json({message:"Error with the service"})
     }

@@ -4,12 +4,12 @@ const useUserAuth = async(req, res, next)=>{
     try{
         const {token} = req.cookies
         if(!token){
-            throw new Error("Token required")
+            res.status(401).send("Invalid Token")
         }
         const tokenData = await jwt.verify(token,"Hem@nth99488")
         const {_id} = tokenData
         if(!_id){
-            throw new Error("Invalid Token")
+            res.status(401).send("Invalid Token")
         }
         const user = await User.findById(_id)
         if(!user){

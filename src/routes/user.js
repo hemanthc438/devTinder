@@ -10,7 +10,8 @@ userRouter.get('/user/requests/received',useUserAuth,async (req,res)=>{
         const connectionRequests = await ConnectionRequests.find({
             toUserId:loggedInUserId,
             connectionStatus:'interested'
-        }).populate("fromUserId","firstName lastName") 
+        }).populate("fromUserId",SAFE_DATA) 
+        
         res.status(200).json({connectionRequests})
     }catch(e){
         res.status(400).send("Error in receiving requests!")
@@ -24,12 +25,12 @@ userRouter.get('/user/connections',useUserAuth,async (req,res)=>{
                 {fromUserId:loggedInUserId,connectionStatus:'accepted'},
                 {toUserId:loggedInUserId,connectionStatus:'accepted'}
             ]
-        }).populate("fromUserId","firstName lastName").populate("toUserId","firstName LastName")
+        }).populate("fromUserId",SAFE_DATA).populate("toUserId",SAFE_DATA)
         if(!connectionRequests){
             res.status(400).send("Connections not found")
         }
         const connections = connectionRequests.map((item)=>{
-            if(item.fromUserId.toString() === loggedInUserId.toString()){
+            if(item.fromUserId._id.toString() === loggedInUserId.toString()){
                 return item.toUserId;
             }
             return item.fromUserId;
