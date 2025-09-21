@@ -6,7 +6,7 @@ const useUserAuth = async(req, res, next)=>{
         if(!token){
             res.status(401).send("Invalid Token")
         }
-        const tokenData = await jwt.verify(token,"Hem@nth99488")
+        const tokenData = await jwt.verify(token,process.env.JWT_SECRET)
         const {_id} = tokenData
         if(!_id){
             res.status(401).send("Invalid Token")
